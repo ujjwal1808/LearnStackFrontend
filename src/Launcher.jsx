@@ -11,7 +11,7 @@ import Login from './Pages/Auth/Login'
 import StudentRoute from './routes/StudentRoute'
 import StudentDashBoard from './Pages/Student/StudentDashBoard'
 import Admindashboard from './Pages/Admin/Admindashboard'
-import InstructorDashBoard from './Pages/Instructor/InstructorDashBoard'
+import InstructorDashboard from './Pages/Instructor/InstructorDashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
 import AdminRoute from './routes/AdminRoute'
 import InstructorRoute from './routes/InstructorRoute'
@@ -87,7 +87,7 @@ const Launcher = () => {
 
                         <Route
                             path="/instructor/dashboard"
-                            element={<InstructorDashBoard />}
+                            element={<InstructorDashboard />}
                         />
                         <Route
                             path="/instructor/create-course"
