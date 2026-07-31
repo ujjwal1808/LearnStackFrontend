@@ -1,57 +1,67 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import {
+  Eye,
+  EyeOff,
+  ArrowRight,
+  LoaderCircle,
+} from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Eye, EyeOff, ArrowRight, BookOpen, ShieldCheck, Sparkles, LoaderCircle  } from "lucide-react";
-// import { Eye, EyeOff} from "lucide-react";
+import url from "../../lib/url";
 
-import axios from 'axios';
-import url from '../../lib/url';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 const SignUp = () => {
-
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState({
     fullName: "",
     phone: "",
     email: "",
     password: "",
-    role:"",
+    role: "",
   });
 
-   const notifySuccessProfileUpdated = () => toast('Successfully Registered! Now you can login', {icon: '✅', style: {
-      borderRadius: '10px',
-      background: '#00d115',
-      color: '#010101',
-    },});
+  const notifySuccessProfileUpdated = () =>
+    toast.success("Successfully Registered! Now you can login.");
 
   const handleChange = (e) => {
-    setUser({
-      ...user,
+    setUser((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(user);
+    try {
+      setLoading(true);
 
-    axios.post(`${url}users/register`, user).then((res)=>{
+      const res = await axios.post(`${url}users/register`, user);
+
       console.log(res.data);
+
       notifySuccessProfileUpdated();
-      navigate('/login');
-    })
+
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+
+      toast.error(
+        err.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-
-
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center px-4">
-
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
 
         <div className="text-center mb-8">
@@ -84,24 +94,31 @@ const SignUp = () => {
           </div>
 
           {/* Role */}
-
           <div>
-  <label className="block mb-2 font-medium">
-    Role
-  </label>
+            <label className="block mb-2 font-medium">
+              Role
+            </label>
 
-  <select
-    name="role"
-    value={user.role}
-    onChange={handleChange}
-    className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-    required
-  >
-    <option value="" disable>Who are you</option>
-    <option value="STUDENT">Student</option>
-    <option value="INSTRUCTOR">Instructor</option>
-  </select>
-</div>
+            <select
+              name="role"
+              value={user.role}
+              onChange={handleChange}
+              className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+              required
+            >
+              <option value="" disabled>
+                Select your role
+              </option>
+
+              <option value="STUDENT">
+                Student
+              </option>
+
+              <option value="INSTRUCTOR">
+                Instructor
+              </option>
+            </select>
+          </div>
 
           {/* Phone */}
           <div>
@@ -157,7 +174,7 @@ const SignUp = () => {
 
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
               >
                 {showPassword ? (
@@ -171,38 +188,50 @@ const SignUp = () => {
           </div>
 
           {/* Register Button */}
-
-          {/* <button
+          <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition"
+            disabled={loading}
+            className={`w-full h-12 rounded-lg flex items-center justify-center gap-2 font-semibold text-white transition
+              ${
+                loading
+                  ? "bg-indigo-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+              }`}
           >
-            Register
-          </button> */}
-
-          <button type="submit" disabled={loading} className="btn-primary h-13 w-full">
-                {loading ? <><LoaderCircle className="animate-spin" size={19} /> Registering </> : <>Register <ArrowRight size={18} /></>}
-              </button>
+            {loading ? (
+              <>
+                <LoaderCircle
+                  className="animate-spin"
+                  size={18}
+                />
+                Registering...
+              </>
+            ) : (
+              <>
+                Register
+                <ArrowRight size={18} />
+              </>
+            )}
+          </button>
 
         </form>
 
         <div className="text-center mt-6">
-
           <p className="text-gray-500">
             Already have an account?
-            <a
-              href="/login"
+
+            <Link
+              to="/login"
               className="text-indigo-600 font-semibold ml-2 hover:underline"
             >
               Login
-            </a>
+            </Link>
           </p>
-
         </div>
 
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
