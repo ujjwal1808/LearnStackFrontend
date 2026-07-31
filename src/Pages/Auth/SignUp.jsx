@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, BookOpen, ShieldCheck, Sparkles, LoaderCircle  } from "lucide-react";
+// import { Eye, EyeOff} from "lucide-react";
+
 import axios from 'axios';
 import url from '../../lib/url';
 import toast from 'react-hot-toast';
@@ -9,8 +11,9 @@ const SignUp = () => {
 
 
   const [showPassword, setShowPassword] = useState(false);
+  
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     fullName: "",
     phone: "",
@@ -94,6 +97,7 @@ const SignUp = () => {
     className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
     required
   >
+    <option value="" disable>Who are you</option>
     <option value="STUDENT">Student</option>
     <option value="INSTRUCTOR">Instructor</option>
   </select>
@@ -168,12 +172,16 @@ const SignUp = () => {
 
           {/* Register Button */}
 
-          <button
+          {/* <button
             type="submit"
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition"
           >
             Register
-          </button>
+          </button> */}
+
+          <button type="submit" disabled={loading} className="btn-primary h-13 w-full">
+                {loading ? <><LoaderCircle className="animate-spin" size={19} /> Registering </> : <>Register <ArrowRight size={18} /></>}
+              </button>
 
         </form>
 
